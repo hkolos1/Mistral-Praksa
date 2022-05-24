@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mistral_Internship.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mistral_Internship.Controllers
 {
@@ -11,7 +12,7 @@ namespace Mistral_Internship.Controllers
         private static List<Character> characters = new List<Character>
         {
             new Character(),
-            new Character{ Name = "Sam"}
+            new Character{ Id = 1, Name = "Sam"}
 
         };
 
@@ -22,12 +23,18 @@ namespace Mistral_Internship.Controllers
             return Ok(characters);
         }
 
-        [HttpGet]
-        public ActionResult<Character> GetSingle()
+        [HttpGet("{id}")]
+        public ActionResult<Character> GetSingle(int id)
         {
-            return Ok(characters[0]);
+            return Ok(characters.FirstOrDefault(c => c.Id == id));
         }
 
+        [HttpPost]
+        public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+        {
+            characters.Add(newCharacter);
+            return Ok(characters);
+        }
 
     }
 }
