@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Mistral_Internship.Services.CharacterService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,9 @@ namespace Mistral_Internship
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mistral_Internship", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MistralPraksa", Version = "v1" });
             });
+            services.AddScoped<ICharacterService, CharacterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
