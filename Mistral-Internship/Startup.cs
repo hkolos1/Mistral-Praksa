@@ -33,6 +33,7 @@ namespace Mistral_Internship
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MistralPraksa", Version = "v1" });
             });
+            services.AddAutoMapper(typeof(Startup));
             services.AddScoped<ICharacterService, CharacterService>();
         }
 
