@@ -26,7 +26,7 @@ namespace Mistral_Internship.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("Class")
                         .HasColumnType("int");
@@ -46,7 +46,12 @@ namespace Mistral_Internship.Migrations
                     b.Property<int>("Strength")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Characters");
                 });
@@ -56,7 +61,7 @@ namespace Mistral_Internship.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("varbinary(max)");
@@ -70,6 +75,20 @@ namespace Mistral_Internship.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+            
+             modelBuilder.Entity("Mistral_Internship.Models.Character", b =>
+                {
+                    b.HasOne("Mistral_Internship.Models.User", "User")
+                        .WithMany("Characters")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Mistral_Internship.Models.User", b =>
+                {
+                    b.Navigation("Characters");
                 });
 #pragma warning restore 612, 618
         }
