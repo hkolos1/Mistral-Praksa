@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Mistral_Internship.Models;
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Mistral_Internship.Data
@@ -8,11 +13,15 @@ namespace Mistral_Internship.Data
     public class AuthRepository : IAuthRepository
     {
         private readonly DataContext _context;
-        public AuthRepository(DataContext context)
+        private readonly IConfiguration _configuration;
+
+        public AuthRepository(DataContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
 
         }
+
         public async Task<ServiceResponse<string>> Login(string username, string password)
         {
             var response = new ServiceResponse<string>();
@@ -29,11 +38,51 @@ namespace Mistral_Internship.Data
             }
             else
             {
-                response.Data = user.Id.ToString();
+                response.Data = CreateToken(user);
             }
 
             return response;
         }
+
+        public async Task<ServiceResponse<int>> Register(User user, string password)
+        {
+            ServiceResponse<int> response = new ServiceResponse<int>();
+            if (await UserExists(user.Username))
+            {
+                response.Success = false;
+                response.Message = "User already exists.";
+                return response;
+            }
+
+            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            response.Data = user.Id;
+            return response;
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            if (await _context.Users.AnyAsync(x => x.Username.ToLower().Equals(username.ToLower())))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
@@ -50,52 +99,29 @@ namespace Mistral_Internship.Data
             }
         }
 
-        public async Task<ServiceResponse<int>> Register(User user, string password)
+        private string CreateToken(User user)
         {
-            ServiceResponse<int> response = new ServiceResponse<int>();
-            if (await UserExists(user.Username))
+            var claim = new List<Claim>()
             {
-                response.Success = false;
-                response.Message = "User already exists.";
-                return response;
-            }
-            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username)
+            };
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            response.Data = user.Id;
-            return response;
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
+                Subject = new ClaimsIdentity(claim),
+                Expires = System.DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
 
-        public async Task<bool> UserExists(string username)
-        {
-            if (await _context.Users.AnyAsync(x => x.Username.ToLower().Equals(username.ToLower())))
-            {
-                return true;
-            }
-            return false;
-        }
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        Task<ServiceResponse<string>> IAuthRepository.Login(string username, string password)
-        {
-            throw new System.NotImplementedException();
-        }
+            return tokenHandler.WriteToken(token);
 
-        Task<bool> IAuthRepository.UserExists(string username)
-        {
-            throw new System.NotImplementedException();
         }
     }
+
 }
