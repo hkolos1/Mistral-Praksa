@@ -1,4 +1,5 @@
-﻿using Mistral_Internship.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Mistral_Internship.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -19,6 +20,13 @@ namespace Mistral_Internship.Data
 
         public async Task<ServiceResponse<int>> Register(User user, string password)
         {
+            ServiceResponse<int> response = new ServiceResponse<int>();
+            if (await UserExists(user.Username))
+            {
+                response.Success = false;
+                response.Message = "User already exists.";
+                return response;
+            }
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.PasswordHash = passwordHash;
@@ -26,7 +34,6 @@ namespace Mistral_Internship.Data
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            ServiceResponse<int> response = new ServiceResponse<int>();
             response.Data = user.Id;
             return response;
         }
@@ -40,9 +47,13 @@ namespace Mistral_Internship.Data
             }
         }
 
-        public Task<bool> UserExists(string username)
+        public async Task<bool> UserExists(string username)
         {
-            throw new System.NotImplementedException();
+            if (await _context.Users.AnyAsync(x => x.Username.ToLower().Equals(username.ToLower())))
+            {
+                return true;
+            }
+            return false;
         }
 
         Task<ServiceResponse<string>> IAuthRepository.Login(string username, string password)
