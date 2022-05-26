@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Mistral_Internship.Dtos.Character;
 using Mistral_Internship.Models;
 using Mistral_Internship.Services.CharacterService;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Mistral_Internship.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CharacterController : ControllerBase
