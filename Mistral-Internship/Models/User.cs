@@ -1,4 +1,6 @@
-﻿namespace Mistral_Internship.Models
+﻿using System.Collections.Generic;
+
+namespace Mistral_Internship.Models
 {
     public class User
     {
@@ -8,6 +10,8 @@
         public byte[] PasswordHash { get; set; }
 
         public byte[] PasswordSalt { get; set; }
+
+        public List<Character> Characters { get; set; }
 
     }
 }
