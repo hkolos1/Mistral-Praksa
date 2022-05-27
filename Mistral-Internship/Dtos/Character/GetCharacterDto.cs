@@ -1,5 +1,7 @@
-﻿using Mistral_Internship.Dtos.Weapon;
+﻿using Mistral_Internship.Dtos.Skill;
+using Mistral_Internship.Dtos.Weapon;
 using Mistral_Internship.Models;
+using System.Collections.Generic;
 
 namespace Mistral_Internship.Dtos.Character
 {
@@ -19,5 +21,7 @@ namespace Mistral_Internship.Dtos.Character
         public RpgClass Class { get; set; } = RpgClass.Knight;
 
         public GetWeaponDto Weapon { get; set; }
+
+        public List<GetSkillDto> Skills { get; set; }
     }
 }
