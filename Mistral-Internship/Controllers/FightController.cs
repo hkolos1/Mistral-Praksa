@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mistral_Internship.Dtos.Fight;
+using Mistral_Internship.Models;
 using Mistral_Internship.Services.FightService;
+using System.Threading.Tasks;
 
 namespace Mistral_Internship.Controllers
 {
@@ -11,6 +14,12 @@ namespace Mistral_Internship.Controllers
         public FightController(IFightService fightService)
         {
             _fightService = fightService;
+        }
+
+        [HttpPost("Weapon")]
+        public async Task<ActionResult<ServiceResponse<AttackResultDto>>> WeaponAttack(WeaponAttackDto request)
+        {
+            return Ok(await _fightService.WeaponAttack(request));
         }
     }
 }
