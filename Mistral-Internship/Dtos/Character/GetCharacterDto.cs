@@ -1,4 +1,5 @@
-﻿using Mistral_Internship.Models;
+﻿using Mistral_Internship.Dtos.Weapon;
+using Mistral_Internship.Models;
 
 namespace Mistral_Internship.Dtos.Character
 {
@@ -16,5 +17,7 @@ namespace Mistral_Internship.Dtos.Character
         public int Intelligence { get; set; } = 10;
 
         public RpgClass Class { get; set; } = RpgClass.Knight;
+
+        public GetWeaponDto Weapon { get; set; }
     }
 }
