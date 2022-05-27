@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Mistral_Internship.Data;
 using Mistral_Internship.Services.CharacterService;
+using Mistral_Internship.Services.FightService;
 using Mistral_Internship.Services.WeaponService;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -57,6 +58,7 @@ namespace Mistral_Internship
                 });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IWeaponService, WeaponService>();
+            services.AddScoped<IFightService, FightService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
