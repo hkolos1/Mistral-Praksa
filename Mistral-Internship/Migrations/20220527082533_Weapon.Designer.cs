@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mistral_Internship.Data;
 
 namespace Mistral_Internship.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220527082533_Weapon")]
+    partial class Weapon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +23,27 @@ namespace Mistral_Internship.Migrations
 
             modelBuilder.Entity("Mistral_Internship.Models.Character", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("Class")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Defense")
+                    b.Property<int>("Defense")
                         .HasColumnType("int");
 
-                    b.Property<int?>("HitPoints")
+                    b.Property<int>("HitPoints")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Intelligence")
+                    b.Property<int>("Intelligence")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Strength")
+                    b.Property<int>("Strength")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserId")
@@ -57,9 +59,9 @@ namespace Mistral_Internship.Migrations
             modelBuilder.Entity("Mistral_Internship.Models.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                         .ValueGeneratedOnAdd()
+                         .HasColumnType("int")
+                         .UseIdentityColumn();
 
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("varbinary(max)");
@@ -76,28 +78,28 @@ namespace Mistral_Internship.Migrations
                 });
 
             modelBuilder.Entity("Mistral_Internship.Models.Weapon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .UseIdentityColumn();
 
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("int");
+                b.Property<int>("CharacterId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("Damage")
-                        .HasColumnType("int");
+                b.Property<int>("Damage")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("CharacterId")
-                        .IsUnique();
+                b.HasIndex("CharacterId")
+                    .IsUnique();
 
-                    b.ToTable("Weapons");
-                });
+                b.ToTable("Weapons");
+            });
 
             modelBuilder.Entity("Mistral_Internship.Models.Character", b =>
                 {
@@ -109,20 +111,20 @@ namespace Mistral_Internship.Migrations
                 });
 
             modelBuilder.Entity("Mistral_Internship.Models.Weapon", b =>
-                {
-                    b.HasOne("Mistral_Internship.Models.Character", "Character")
-                        .WithOne("Weapon")
-                        .HasForeignKey("Mistral_Internship.Models.Weapon", "CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Mistral_Internship.Models.Character", "Character")
+                    .WithOne("Weapon")
+                    .HasForeignKey("Mistral_Internship.Models.Weapon", "CharacterId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Character");
-                });
+                b.Navigation("Character");
+            });
 
             modelBuilder.Entity("Mistral_Internship.Models.Character", b =>
-                {
-                    b.Navigation("Weapon");
-                });
+            {
+                b.Navigation("Weapon");
+            });
 
             modelBuilder.Entity("Mistral_Internship.Models.User", b =>
                 {
