@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Mistral_Internship.Dtos.Character;
+using Mistral_Internship.Dtos.Fight;
 using Mistral_Internship.Dtos.Skill;
 using Mistral_Internship.Dtos.Weapon;
 using Mistral_Internship.Models;
@@ -14,6 +15,7 @@ namespace Mistral_Internship
             CreateMap<AddCharacterDto, Character>();
             CreateMap<Weapon, GetWeaponDto>();
             CreateMap<Skill, GetSkillDto>();
+            CreateMap<Character, HighscoreDto>();
 
         }
 
