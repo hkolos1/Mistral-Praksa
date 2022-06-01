@@ -17,6 +17,8 @@ namespace Mistral_Internship.Data
 
         public DbSet<Skill> Skills { get; set; }
 
+        public DbSet<Quote> Quotes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Skill>().HasData(
